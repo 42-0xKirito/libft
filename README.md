@@ -11,3 +11,6 @@
 - Manipulation de chaînes
 - Allocation dynamique
 - Listes chaînées (bonus)
+
+## Sujet du projet
+Vous pouvez consulter le sujet officiel ici : [📑 Sujet PDF](./libft.subject.pdf)
