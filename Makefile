@@ -1,51 +1,56 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: engiacom <marvin@42.fr>                    +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2019/10/07 11:05:52 by engiacom          #+#    #+#              #
-#    Updated: 2024/11/10 04:00:53 by engiacom         ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
+# Fichiers sources
+SRCS            = $(wildcard $(SRC_DIR)/*.c)
+BONUS_SRCS      = $(wildcard $(SRC_BONUS_DIR)/*.c)
 
-SRCS			=	ft_isalnum.c ft_isprint.c ft_memcmp.c  ft_putchar_fd.c ft_split.c \
-					ft_strlcat.c ft_strncmp.c ft_substr.c ft_atoi.c ft_isalpha.c \
-					ft_itoa.c ft_memcpy.c  ft_putendl_fd.c ft_strchr.c  ft_strlcpy.c \
-					ft_strnstr.c ft_tolower.c ft_bzero.c   ft_isascii.c ft_striteri.c \
-					ft_memmove.c ft_putnbr_fd.c  ft_strdup.c  ft_strlen.c  ft_strrchr.c \
-					ft_toupper.c ft_calloc.c  ft_isdigit.c ft_memchr.c  ft_memset.c  \
-					ft_putstr_fd.c  ft_strjoin.c ft_strmapi.c ft_strtrim.c
+# Fichiers objets
+OBJS            = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRCS))
+BONUS_OBJS      = $(patsubst $(SRC_BONUS_DIR)/%.c, $(OBJ_BONUS_DIR)/%.o, $(BONUS_SRCS))
 
-OBJS			= $(SRCS:.c=.o)
+# Dossiers
+SRC_DIR         = src
+SRC_BONUS_DIR   = src_bonus
+OBJ_DIR         = obj
+OBJ_BONUS_DIR   = obj_bonus
 
-BONUS			=	ft_lstnew_bonus.c ft_lstadd_front_bonus.c ft_lstsize_bonus.c \
-					ft_lstlast_bonus.c ft_lstadd_back_bonus.c ft_lstdelone_bonus.c \
-					ft_lstclear_bonus.c ft_lstiter_bonus.c ft_lstmap_bonus.c
+# Compilateur et flags
+CC              = cc
+CFLAGS          = -Wall -Wextra -Werror -I.
 
-BONUS_OBJS		= $(BONUS:.c=.o)
+# Nom de la librairie
+NAME            = libft.a
 
-CC				= cc
-RM				= rm -f
-CFLAGS			= -Wall -Wextra -Werror -I.
+# Commandes
+RM              = rm -rf
+MKDIR           = mkdir -p
 
-NAME			= libft.a
+# Règles
+all: $(OBJ_DIR) $(NAME)
 
-all:			$(NAME)
+$(OBJ_DIR):
+	$(MKDIR) $(OBJ_DIR)
 
-$(NAME):		$(OBJS)
-				ar rcs $(NAME) $(OBJS)
+$(OBJ_BONUS_DIR):
+	$(MKDIR) $(OBJ_BONUS_DIR)
+
+$(NAME): $(OBJS)
+	ar rcs $(NAME) $(OBJS)
+
+# Compilation des fichiers sources en objets
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(OBJ_BONUS_DIR)/%.o: $(SRC_BONUS_DIR)/%.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+bonus: $(OBJ_DIR) $(OBJ_BONUS_DIR) $(OBJS) $(BONUS_OBJS)
+	ar rcs $(NAME) $(OBJS) $(BONUS_OBJS)
 
 clean:
-				$(RM) $(OBJS) $(BONUS_OBJS)
+	$(RM) $(OBJ_DIR) $(OBJ_BONUS_DIR)
 
-fclean:			clean
-				$(RM) $(NAME)
+fclean: clean
+	$(RM) $(NAME)
 
-re:				fclean $(NAME)
+re: fclean all
 
-bonus:			$(OBJS) $(BONUS_OBJS)
-				ar rcs $(NAME) $(OBJS) $(BONUS_OBJS)
-
-.PHONY:			all clean fclean re bonus
+.PHONY: all clean fclean re bonus
